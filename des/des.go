@@ -1,7 +1,7 @@
 package des
 
 import (
-	"common/crypto/padding"
+	"github.com/honsty/cryptos/padding"
 	icipher "crypto/cipher"
 	ides "crypto/des"
 	"errors"

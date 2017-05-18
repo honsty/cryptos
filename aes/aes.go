@@ -1,8 +1,8 @@
 package aes
 
 import (
-	"common/crypto/cipher"
-	"common/crypto/padding"
+	"github.com/honsty/cryptos/cipher"
+	"github.com/honsty/cryptos/padding"
 	iaes "crypto/aes"
 	icipher "crypto/cipher"
 	"errors"
