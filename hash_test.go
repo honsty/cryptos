@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"encoding/hex"
 	"testing"
+	"crypto/sha256"
+	"crypto/sha1"
+	"crypto/sha512"
 )
 
 func TestMd5(t *testing.T) {
@@ -29,3 +32,30 @@ func TestShortKey(t *testing.T) {
 	short, err := ShortKey(key, str)
 	t.Logf("%s %v", short, err)
 }
+
+func TestSha1(t *testing.T) {
+	hash:=sha1.New()
+	hash.Write([]byte("admin"))
+	md:=hash.Sum(nil)
+	t.Log(hex.EncodeToString(md))
+}
+
+func TestSha256(t *testing.T){
+	hash:=sha256.New()
+	hash.Write([]byte("admin"))
+	md:=hash.Sum(nil)
+	t.Log(hex.EncodeToString(md))
+}
+
+
+func TestSha512(t *testing.T){
+	hash:=sha512.New()
+	hash.Write([]byte("admin"))
+	md:=hash.Sum(nil)
+	t.Log(hex.EncodeToString(md))
+}
+
+/*
+go test -test.run TestSha1
+go test -test.run TestSha256
+*/
