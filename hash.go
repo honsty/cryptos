@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/binary"
 	"encoding/hex"
 )
@@ -39,6 +41,26 @@ func Sha1Str(s string) string {
 	hash.Write([]byte(s))
 	value := hash.Sum(nil)
 	return hex.EncodeToString(value)
+}
+
+func Sha256(s []byte) []byte {
+	hash := sha256.New()
+	hash.Write(s)
+	return hash.Sum(nil)
+}
+
+func Sha256Str(s []byte) string {
+	return hex.EncodeToString(Sha256(s))
+}
+
+func Sha512(s []byte) []byte {
+	hash := sha512.New()
+	hash.Write(s)
+	return hash.Sum(nil)
+}
+
+func Sha512Str(s []byte) string {
+	return hex.EncodeToString(Sha512(s))
 }
 
 func Encrypt(s string) []byte {

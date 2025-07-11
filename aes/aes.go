@@ -1,11 +1,14 @@
 package aes
 
 import (
-	"github.com/honsty/cryptos/cipher"
-	"github.com/honsty/cryptos/padding"
 	iaes "crypto/aes"
 	icipher "crypto/cipher"
+	"crypto/rand"
 	"errors"
+	"io"
+
+	"github.com/honsty/cryptos/cipher"
+	"github.com/honsty/cryptos/padding"
 )
 
 var (
@@ -99,4 +102,46 @@ func CBCDecrypt(src, key, iv []byte, p padding.Padding) ([]byte, error) {
 	} else {
 		return p.Unpadding(decryptText, iaes.BlockSize)
 	}
+}
+
+// GCMEncrypt aes gcm encrypt. AES-256 密钥长度为 32 字节
+func GCMEncrypt(src, key []byte) ([]byte, error) {
+	block, err := iaes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	aesGcm, err := icipher.NewGCM(block)
+	if err != nil {
+		panic(err)
+	}
+
+	nonce := make([]byte, aesGcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		panic(err)
+	}
+	ciphertext := aesGcm.Seal(nonce, nonce, src, nil)
+	return ciphertext, nil
+}
+
+// GCMDecrypt aes gcm decrypt
+func GCMDecrypt(src, key []byte) ([]byte, error) {
+	block, err := iaes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	aesGcm, err := icipher.NewGCM(block)
+	if err != nil {
+		panic(err)
+	}
+
+	nonceSize := aesGcm.NonceSize()
+	if len(src) < nonceSize {
+		panic("ciphertext too shart")
+	}
+	receivedNonce := src[:nonceSize]
+	receivedCiphertext := src[nonceSize:]
+	plaintext, err := aesGcm.Open(nil, receivedNonce, receivedCiphertext, nil)
+	return plaintext, err
 }
